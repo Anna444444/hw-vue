@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue - Задание 3</title>
+    <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+
+
+    <div id="root">
+        <span>Генератор случайных чисел: {{currentNumber}}</span><br><br>
+        <button v-on:click="generateRandomNumber">Cлучайное число</button>
+        <ul>
+            <li v-for="number in generatedNumbers" :key="number">{{number}}</li>
+        </ul>
+    </div>
+
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    currentNumber: 0,
+                    generatedNumbers: []
+                };
+            },
+            methods: {
+                generateRandomNumber() {
+                    const randomNumber = Math.floor(Math.random() * 100) + 1;
+                    this.currentNumber = randomNumber;
+                    this.generatedNumbers.push(randomNumber);
+                }
+            }
+        }).mount("#root");
+    </script>
+
+
+</body>
+</html>

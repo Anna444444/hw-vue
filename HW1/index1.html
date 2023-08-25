@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue - Задание 1</title>
+    <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+
+
+    <div id="root">
+        <span>ФИО: {{name}}</span><br>
+        <span>Возраст: {{age}}</span>
+        <img src="" alt="">
+    </div>
+    <script>
+        Vue.createApp({
+            data: () => {
+                return {
+                    img: "https://ru.vuejs.org/images/logo.png",
+                    name: "Иванов Иван Иванович",
+                    age: 30
+                }
+            },
+            mounted() {
+                setInterval(() => {
+                    this.counter++;
+                }, 1000);
+                document.querySelector("#root > img").
+                setAttribute("src", this.img)
+            }
+        }).mount("#root");
+    </script>
+
+
+</body>
+</html>
