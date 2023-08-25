@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ДЗ3: Работа с формами.</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+
+
+    <div id="app">
+        <fieldset>
+            <input type="text" placeholder="Пользователь" v-model="username">
+            <input type="text" placeholder="Текст" v-model="message">
+            <button type="submit" @click="addPost()">Добавить пост</button>
+        </fieldset>
+
+        <div class="posts">
+            <div class="post" v-for="(post, index) in posts" :key="index">
+                <div v-if="!post.isEditing">
+                    <div :style="getPostStyle(post)">{{post.username}}: {{post.message}} <br></div>
+                </div>
+                <div v-else>
+                    <textarea v-model="post.message" @input="updatePostText(index, $event)"></textarea>
+                </div>
+                <button id="edit" @click="editPost(index)">Редактировать</button>
+                <div v-if="post.isEditing" class="edit-panel">
+                    <input type="color" v-model="post.textColor" placeholder="font color" />
+                    <input type="color" v-model="post.backgroundColor" placeholder="background color" />
+                    <label>Шрифт:
+                        <select v-model="post.fontFamily">
+                            <option>Arial</option>
+                            <option>Verdana</option>
+                            <option>Times New Roman</option>
+                        </select>
+                    </label>
+                    <label>Размер шрифта:
+                        <input type="number" v-model="post.fontSizePx" min="10" max="50">px
+                    </label>
+                    <label>
+                        <input type="checkbox" v-model="post.isBold" /> Жирный
+                    </label>
+                    <label>
+                        <input type="checkbox" v-model="post.isItalic" /> Курсив
+                    </label>
+                    <button id="changes" @click="saveChanges(index)">Сохранить изменения</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script src="script.js"></script>
+</body>
+</html>
