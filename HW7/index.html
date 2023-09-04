@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Практика</title>
+    <link href='index.css' rel='stylesheet' type='text/css'>
+    <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+
+
+
+    <div id="root">
+        <input type="text" v-model.lazy="name" v-random-bg>
+        {{ name }}
+    
+        <div v-hide-on-weekends>
+            Элемент будет скрыт по выходным дням.
+        </div>
+    
+        <div v-add-tag:span="{class: 'highlight', text: highlight}"></div>
+    
+        <ul v-generate-list.random="items"></ul>
+    
+        <img v-change-image="{ images: imageLinks, interval: 2000 }" alt="Dynamic Image" />
+    </div>
+    
+    <script>
+        let va = Vue.createApp({
+            data: () => {
+                return {
+                    name: "",
+                    num: 10,
+                    highlight: "Любой текст",
+                    items: ["1 - Яблоко", "2 Груша", "3 Ананс", "4 Банан"],
+                    imageLinks: [
+                        'https://upload.wikimedia.org/wikipedia/commons/1/10/Rubiks_cube.jpg',
+                        'https://upload.wikimedia.org/wikipedia/commons/0/07/Wikipedia_logo_%28svg%29.svg',
+                        'https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg'
+                    ]
+                }
+            },
+            created() {
+                console.log("Created");
+            },
+            mounted() {
+                console.log("Mounted");
+                setTimeout(() => {
+                    this.text = "New Text";
+                }, 2000)
+            },
+            methods: {
+                log(event) {
+                    console.log(event)
+                }
+            }
+        });
+    
+        va.directive('hide-on-weekends', {
+            mounted(el) {
+                let date = new Date();
+                let dayOfWeek = date.getDay();
+    
+                if (dayOfWeek === 0 || dayOfWeek === 6) {
+                    el.style.display = 'none';
+                }
+            }
+        });
+    
+        va.directive('random-bg', {
+            updated(el) {
+                let randomColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+                el.style.backgroundColor = randomColor;
+            }
+        });
+    
+        va.directive('add-tag', {
+            mounted(el, binding) {
+                const tagName = binding.arg;
+                const { class: className, text } = binding.value;
+    
+                if (tagName) {
+                    const tagElement = document.createElement(tagName);
+                    tagElement.className = className;
+                    tagElement.textContent = text;
+                    el.appendChild(tagElement);
+                }
+            }
+        });
+    
+        va.directive('generate-list', {
+            mounted(el, binding) {
+                let items = binding.value;
+    
+                if (binding.modifiers.reverse) {
+                    items = items.reverse();
+                } else if (binding.modifiers.random) {
+                    items = items.sort(() => Math.random() - 0.5);
+                }
+    
+                items.forEach(item => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = item;
+                    el.appendChild(listItem);
+                });
+            }
+        });
+    
+        va.directive('change-image', {
+            mounted(el, binding) {
+                const { images, interval } = binding.value;
+                let currentIndex = 0;
+    
+                if (!images || !images.length) return;
+    
+                el.src = images[0];
+    
+                const updateImage = () => {
+                    if (binding.modifiers.random) {
+                        currentIndex = Math.floor(Math.random() * images.length);
+                    } else {
+                        currentIndex = (currentIndex + 1) % images.length;
+                    }
+                    el.src = images[currentIndex];
+                }
+    
+                const intervalID = setInterval(updateImage, interval);
+    
+                el._vueImageInterval_ = intervalID;
+            },
+            unmounted(el) {
+                clearInterval(el._vueImageInterval_);
+            }
+        });
+    
+        va.mount("#root")
+    </script>
+
+
+    <!-- <script src="script.js"></script> -->
+</body>
+</html>
